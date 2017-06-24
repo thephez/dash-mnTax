@@ -35,13 +35,28 @@ fi
 
 ADDR=$1
 EXPLORER="$EXPLORER$ADDR"
+
+## Check for bitstampUSD.csv and download it if missing
+if [[ -f $BTC_FILE ]]; then
+   echo "## Found $BTC_FILE"
+else
+   printf "\n############## File \"$BTC_FILE\" in directory \"$(pwd)\" does not exist. ###############\n\n"
+   echo "You can download manually from https://api.bitcoincharts.com/v1/csv/bitstampUSD.csv.gz and extract \"$BTC_FILE\""
+   echo "Or you wait and let the script download (80MB) and extract (500MB)"
+   printf "\nStarting Download in 15 Seconds\n\n"
+   sleep 15
+   curl -O $BTCCHART
+   gzip -d $BTCCHARTARCHIVE
+   printf "\nFinished downloading and extracting\n\n" 
+fi
+
+## Start printing on console
 echo "## Using DASH Address: \"$ADDR\""
 
-if [[ $# -eq 3 ]]
-  then
+if [[ $# -eq 3 ]]; then
     startdate=$2
     enddate=$3
-  else
+else
     startdate="2016-01-01 00:00:00"
     enddate="2016-12-31 23:59:59"
     echo "## No Date specified, using defaults"
@@ -71,8 +86,7 @@ do
   ind=$i*2
 
   # exclude outgoing and 1000 dash transaction
-  if [[ ${amount[$i]} != "("* ]] && [[ ${amount[$i]} != "1000" ]]
-  then
+  if [[ ${amount[$i]} != "("* ]] && [[ ${amount[$i]} != "1000" ]]; then
     cmd=$(echo date -d \'UTC ${expdate[$ind]} ${expdate[$ind+1]}\' +\"%s\")
     tmptime=$(eval $cmd)
     if [[ $tmptime > $startunixtime && $tmptime < $endunixtime ]]; then
@@ -98,20 +112,7 @@ echo "## Get BTC/USD data from Bitstamp for each MN payment"
 #echo $cnt
 #echo ${charts[0]}
 
-## Download data and then loop through it using grep (TODO: replace with more efficient solution)
-if [[ -f $BTC_FILE ]]; then
-   echo "Found $BTC_FILE"
-else
-   printf "\n############## File \"$BTC_FILE\" in directorz \"$(pwd)\" does not exist. ###############\n\n"
-   echo "You can download manually from https://api.bitcoincharts.com/v1/csv/bitstampUSD.csv.gz and extract \"$BTC_FILE\""
-   echo "Or you wait and let the script download (80MB) and extract (500MB) it"
-   printf "\nStarting Download in 15 Seconds\n"
-   sleep 15
-   curl -O $BTCCHART
-   gzip -d $BTCCHARTARCHIVE
-   printf "\nFinished downloading and extracting\n" 
-fi
-
+## Loop through data using grep (TODO: replace with more efficient solution)
 for((i=0;i<$cnt;i++))
 do
   # try to get btc price at same time than mn payment
@@ -158,8 +159,7 @@ for((i=0;i<$cnt;i++))
 do
   tmpres=$(echo "${btc[$i]} * ${dash[$i]} * ${dashamount[$i]}" | bc)
   usd[$i]=$tmpres
-  if [[ $tmpres == "0" ]]
-  then
+  if [[ $tmpres == "0" ]]; then
     (( error++ ))
     echo "(ERROR) [$i] Date: ${date[$i]} ${time[$i]}, Amount: ${dashamount[$i]} DASH, Exchange price: ${dash[$i]} DASH/BTC and ${btc[$i]} BTC/USD, Income: ${usd[$i]} USD"
   else
