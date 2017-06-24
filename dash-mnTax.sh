@@ -18,7 +18,8 @@
 EXPLORER="https://explorer.dash.org/address/"
 POLONIEX='https://poloniex.com/public?command=returnChartData&currencyPair=BTC_DASH'
 BTCCHART='https://api.bitcoincharts.com/v1/csv/bitstampUSD.csv.gz'
-BTCCHARTFILE='bitstampUSD.csv'
+BTCCHARTARCHIVE='bitstampUSD.csv.gz'
+BTC_FILE='bitstampUSD.csv'
 
 declare -i error=0
 declare -i ind n cnt
@@ -98,7 +99,6 @@ echo "## Get BTC/USD data from Bitstamp for each MN payment"
 #echo ${charts[0]}
 
 ## Download data and then loop through it using grep (TODO: replace with more efficient solution)
-BTC_FILE='bitstampUSD.csv'     
 if [[ -f $BTC_FILE ]]; then
    echo "Found $BTC_FILE"
 else
@@ -108,7 +108,7 @@ else
    printf "\nStarting Download in 15 Seconds\n"
    sleep 15
    curl -O $BTCCHART
-   gzip -d $BTCCHARTFILE
+   gzip -d $BTCCHARTARCHIVE
    printf "\nFinished downloading and extracting\n" 
 fi
 
