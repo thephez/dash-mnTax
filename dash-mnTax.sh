@@ -62,7 +62,7 @@ else
     echo "## No Date specified, using defaults"
 fi
 echo "## Using Start Date: $startdate"
-echo "## Using End Date: $enddate"
+echo "## Using End Date:   $enddate"
 
 cmd=$(echo date -d \'UTC $startdate\' +\"%s\")
 startunixtime=$(eval $cmd)
@@ -151,7 +151,7 @@ done
 printf "\n"
 
 ###########################################################
-echo "## Printing History and calculating Total USD Income"
+echo "## Printing History and calculating Total USD Value"
 totalusd="0.0"
 totaldash="0.0"
 
@@ -161,18 +161,18 @@ do
   usd[$i]=$tmpres
   if [[ $tmpres == "0" ]]; then
     (( error++ ))
-    echo "(ERROR) [$i] Date: ${date[$i]} ${time[$i]}, Amount: ${dashamount[$i]} DASH, Exchange price: ${dash[$i]} DASH/BTC and ${btc[$i]} BTC/USD, Income: ${usd[$i]} USD"
+    echo "(ERROR) [$i] Date: ${date[$i]} ${time[$i]}, Amount: ${dashamount[$i]} DASH, Exchange price: ${dash[$i]} DASH/BTC and ${btc[$i]} BTC/USD, Value: ${usd[$i]} USD"
   else
     totalusd=$(echo "$totalusd + ${usd[$i]}" | bc)
     totaldash=$(echo "$totaldash + ${dashamount[$i]}" | bc)
-    echo "[$i] Date: ${date[$i]} ${time[$i]}, Amount: ${dashamount[$i]} DASH, Exchange price: ${dash[$i]} DASH/BTC and ${btc[$i]} BTC/USD, Income: ${usd[$i]} USD"
+    echo "[$i] Date: ${date[$i]} ${time[$i]}, Amount: ${dashamount[$i]} DASH, Exchange price: ${dash[$i]} DASH/BTC and ${btc[$i]} BTC/USD, Value: ${usd[$i]} USD"
   fi
 done
 
 echo 
 echo "Start Date: $startdate  --  First Payment: ${date[0]} ${time[0]}"
 echo "End Date:   $enddate  --  Last Payment: ${date[$cnt-1]} ${time[$cnt-1]}"
-echo "Total USD Income:     $totalusd USD"
 echo "Total DASH Received:  $totaldash DASH"
+echo "Total USD Value:      $totalusd USD"
 echo 
 echo "Finished with $error Errors (missing price info)"
