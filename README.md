@@ -6,6 +6,9 @@ Simple [bash script](dash-mnTax.sh) for listing past dash.org masternode payment
 - Usage: `bash dash-mnTax.sh <DASH ADDRESS> [<START DATE> <END DATE>]`
 - Example: `bash dash-mnTax.sh XdEmOjfadjfiieur8fjdkewi7849jfdls "2016-01-01 00:00:00" "2016-12-31 23:59:59"`
 
+## Requirements:
+- install calculator `bc` e.g. `apt-get install bc`
+
 ## Description:
 This script will list all masternode payments (earliest starting June 2014) and their US Dollar value at that given time.
 
