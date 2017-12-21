@@ -16,7 +16,7 @@ Algorithm:
 - Get MN transaction data from Dash block explorer
 - Get BTC/USD data from Bitstamp for each MN payment
 - Get DASH/BTC data from Poloniex for each MN payment
-- Printing History and calculating Total USD Income
+- Printing History and calculating Total USD Value
 
 Note: Because Bitstamp API does not provide proper trading history, the script will download BTC history in CSV format from bitcoincharts.com. 600 MB are required for this. The script reads the file several times, this causes high harddisk load and long runtime.
 
