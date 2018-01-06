@@ -38,7 +38,8 @@ EXPLORER="$EXPLORER$ADDR"
 
 ## Check for bitstampUSD.csv and download it if missing
 if [[ -f $BTC_FILE ]]; then
-   echo "## Found $BTC_FILE"
+   echo "## Using existing $BTC_FILE"
+   echo "## Please DELETE $BTC_FILE to download newest version!"
 else
    printf "\n############## File \"$BTC_FILE\" in directory \"$(pwd)\" does not exist. ###############\n\n"
    echo "You can download manually from https://api.bitcoincharts.com/v1/csv/bitstampUSD.csv.gz and extract \"$BTC_FILE\""
@@ -144,6 +145,18 @@ do
   param=$(echo \&start=$timestart\&end=$timeend\&period=7200)
   POLONIEXURL=$(echo $POLONIEX$param)
   tmpres=($(curl -s "$POLONIEXURL" | grep -Po '.*"weightedAverage":\K.*?(?=}.*)'))
+  # retry 2 more times if empty
+  if [[ $tmpres == ""  ]]; then
+	sleep 3
+	tmpres=($(curl -s "$POLONIEXURL" | grep -Po '.*"weightedAverage":\K.*?(?=}.*)'))
+	if [[ $tmpres == ""  ]]; then
+	  sleep 3
+	  tmpres=($(curl -s "$POLONIEXURL" | grep -Po '.*"weightedAverage":\K.*?(?=}.*)'))
+	  if [[ $tmpres == ""  ]]; then
+	    tmpres="0" # mark as error
+	  fi
+	fi
+  fi
   dash[$i]=$tmpres
   sleep 1 # dont spam polo api
   printf "."
