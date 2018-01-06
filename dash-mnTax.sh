@@ -147,10 +147,10 @@ do
   tmpres=($(curl -s "$POLONIEXURL" | grep -Po '.*"weightedAverage":\K.*?(?=}.*)'))
   # retry 2 more times if empty
   if [[ $tmpres == ""  ]]; then
-	sleep 3
+	sleep 10
 	tmpres=($(curl -s "$POLONIEXURL" | grep -Po '.*"weightedAverage":\K.*?(?=}.*)'))
 	if [[ $tmpres == ""  ]]; then
-	  sleep 3
+	  sleep 10
 	  tmpres=($(curl -s "$POLONIEXURL" | grep -Po '.*"weightedAverage":\K.*?(?=}.*)'))
 	  if [[ $tmpres == ""  ]]; then
 	    tmpres="0" # mark as error
@@ -158,7 +158,7 @@ do
 	fi
   fi
   dash[$i]=$tmpres
-  sleep 1 # dont spam polo api
+  sleep 3 # dont spam polo api
   printf "."
 done
 printf "\n"
